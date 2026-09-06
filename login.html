@@ -1,0 +1,64 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Vet San Marcos</title>
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<header class="header-vet">
+  <div class="nav-bar">
+    <a href="index.html" class="logo">Vet San Marcos</a>
+    <nav>
+      <ul class="menu">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="servicios.html">Servicios</a></li>
+        <li><a href="login.html">Ingresar</a></li>
+        <li><a href="registro.html">Registro</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="banner-principal" style="display: block; max-width: 500px;">
+    <h1 style="color: #2e86c1;">Iniciar Sesión</h1>
+    <p>Ingresa para ver las fichas de tus animales en línea.</p>
+    
+    <form id="form-login" style="display: flex; flex-direction: column; gap: 15px;">
+      <label>Correo:</label>
+      <input type="text" id="correo-log" style="padding: 10px;" placeholder="tu correo">
+      
+      <label>Contraseña:</label>
+      <input type="password" id="clave-log" style="padding: 10px;" placeholder="tu clave">
+      
+      <button type="button" class="boton-verde" onclick="validarLogin()">Entrar a mi cuenta</button>
+      <p id="error-log" style="color: red; font-weight: bold;"></p>
+    </form>
+  </section>
+</main>
+
+<footer class="footer-decorado">
+  <p>Veterinaria San Marcos 2026 - Proyecto de evaluación</p>
+  <p>Hecho por alumnos</p>
+</footer>
+
+<script>
+  function validarLogin() {
+    var correo = document.getElementById('correo-log').value;
+    var clave = document.getElementById('clave-log').value;
+    
+    if(correo == "" || clave == "") {
+      document.getElementById('error-log').innerText = "Llena todos los campos, por favor";
+    } else {
+      document.getElementById('error-log').style.color = "green";
+      document.getElementById('error-log').innerText = "Ingresando al sistema...";
+    }
+  }
+</script>
+
+</body>
+</html>
