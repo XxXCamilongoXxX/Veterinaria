@@ -135,3 +135,116 @@ body {
   border-top: 8px solid #28b463; 
   margin-top: 20px;
 }
+
+/* =========================================
+   Estilos para los Formularios (Login y Registro)
+   ========================================= */
+.contenedor-formulario {
+  background-color: #fff;
+  border: 3px dashed #2e86c1; 
+  margin: 30px auto;
+  max-width: 450px;
+  padding: 30px;
+  border-radius: 15px;
+}
+
+.titulo-azul {
+  color: #2e86c1;
+  margin-top: 0;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.grupo-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.grupo-form label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.grupo-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+/* Clases que agrega tu script.js cuando hay errores o aciertos */
+.grupo-form input.invalido {
+  border-color: red;
+  background-color: #ffe6e6;
+}
+
+.msj-error {
+  color: red;
+  font-size: 13px;
+  margin-top: 3px;
+}
+
+.exito {
+  color: green;
+  font-weight: bold;
+}
+
+.fallo {
+  color: red;
+  font-weight: bold;
+}
+
+/* Enlaces del final del formulario */
+.enlaces-form {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.enlaces-form p {
+  margin: 5px 0;
+}
+
+.enlaces-form a {
+  color: #2e86c1;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.enlaces-form a:hover {
+  text-decoration: underline;
+  color: #1b4f72;
+}
+
+
+.perfil-usuario {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-weight: bold;
+}
+
+.foto-perfil {
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  color: #2e86c1; /* Azul del menú */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+#cerrar-sesion {
+  background-color: #e74c3c; 
+}
+
+#cerrar-sesion:hover {
+  background-color: #c0392b;
+}

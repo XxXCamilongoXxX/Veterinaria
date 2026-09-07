@@ -1,4 +1,3 @@
-<!-- login.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -24,41 +23,43 @@
 </header>
 
 <main>
-  <section class="banner-principal" style="display: block; max-width: 500px;">
-    <h1 style="color: #2e86c1;">Iniciar Sesión</h1>
+  <section class="contenedor-formulario">
+    <h1 class="titulo-azul">Iniciar Sesión</h1>
     <p>Ingresa para ver las fichas de tus animales en línea.</p>
     
-    <form id="form-login" style="display: flex; flex-direction: column; gap: 15px;">
-      <label>Correo:</label>
-      <input type="text" id="correo-log" style="padding: 10px;" placeholder="tu correo">
+    <!-- Conectado al script.js con id="form-login" -->
+    <form id="form-login" class="formulario">
+      <div class="grupo-form">
+        <label for="correo-login">Correo:</label>
+        <input type="text" id="correo-login" placeholder="tu@correo.com">
+        <span id="correo-login-error" class="msj-error"></span>
+      </div>
       
-      <label>Contraseña:</label>
-      <input type="password" id="clave-log" style="padding: 10px;" placeholder="tu clave">
+      <div class="grupo-form">
+        <label for="clave-login">Contraseña:</label>
+        <input type="password" id="clave-login" placeholder="tu clave">
+        <span id="clave-login-error" class="msj-error"></span>
+      </div>
       
-      <button type="button" class="boton-verde" onclick="validarLogin()">Entrar a mi cuenta</button>
-      <p id="error-log" style="color: red; font-weight: bold;"></p>
+      <!-- Ya no usamos onclick, el script.js escucha el evento submit del formulario -->
+      <button type="submit" class="boton-verde">Entrar a mi cuenta</button>
+      <p id="mensaje-formulario"></p>
+      
+      <!-- Enlaces requeridos por la pauta -->
+      <div class="enlaces-form">
+        <p>¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
+        <p><a href="index.html">Volver a la página principal</a></p>
+      </div>
     </form>
   </section>
 </main>
 
 <footer class="footer-decorado">
-  <p>Veterinaria San Marcos 2026 - Proyecto de evaluación</p>
+  <p>Veterinaria San Marcos <span id="anio-actual"></span> - Proyecto de evaluación</p>
   <p>Hecho por alumnos</p>
 </footer>
 
-<script>
-  function validarLogin() {
-    var correo = document.getElementById('correo-log').value;
-    var clave = document.getElementById('clave-log').value;
-    
-    if(correo == "" || clave == "") {
-      document.getElementById('error-log').innerText = "Llena todos los campos, por favor";
-    } else {
-      document.getElementById('error-log').style.color = "green";
-      document.getElementById('error-log').innerText = "Ingresando al sistema...";
-    }
-  }
-</script>
-
+<!-- Enlazamos tu script externo -->
+<script src="js/script.js"></script>
 </body>
 </html>

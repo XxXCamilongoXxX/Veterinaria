@@ -1,4 +1,3 @@
-<!-- registro.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -24,64 +23,69 @@
 </header>
 
 <main>
-  <section class="banner-principal" style="display: block; max-width: 500px;">
-    <h1 style="color: #2e86c1;">Crear cuenta nueva</h1>
-    <p>Únete para pedir horas sin tener que llamar a la recepcionista de la clínica.</p>
+  <section class="contenedor-formulario">
+    <h1 class="titulo-azul">Crear cuenta nueva</h1>
+    <p>Únete para pedir horas sin tener que llamar a la clínica.</p>
     
-    <form id="form-reg" style="display: flex; flex-direction: column; gap: 15px;">
-      <label>Tu nombre:</label>
-      <input type="text" id="nom-reg" style="padding: 10px;" placeholder="Juan Pérez">
+    <form id="form-registro" class="formulario">
+      <div class="grupo-form">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" placeholder="Ej: Juan">
+        <span id="nombre-error" class="msj-error"></span>
+      </div>
+
+      <div class="grupo-form">
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" placeholder="Ej: Pérez">
+        <span id="apellido-error" class="msj-error"></span>
+      </div>
       
-      <label>Correo:</label>
-      <input type="text" id="mail-reg" style="padding: 10px;" placeholder="juan@correo.com">
+      <div class="grupo-form">
+        <label for="correo-registro">Correo:</label>
+        <input type="text" id="correo-registro" placeholder="juan@correo.com">
+        <span id="correo-registro-error" class="msj-error"></span>
+      </div>
       
-      <label>Contraseña:</label>
-      <input type="password" id="pass1" style="padding: 10px;">
+      <div class="grupo-form">
+        <label for="clave-registro">Contraseña:</label>
+        <input type="password" id="clave-registro" placeholder="Mínimo 8 caracteres">
+        <span id="clave-registro-error" class="msj-error"></span>
+      </div>
       
-      <label>Repetir contraseña:</label>
-      <input type="password" id="pass2" style="padding: 10px;">
+      <div class="grupo-form">
+        <label for="clave-confirmar">Repetir contraseña:</label>
+        <input type="password" id="clave-confirmar" placeholder="Repite tu contraseña">
+        <span id="clave-confirmar-error" class="msj-error"></span>
+      </div>
+
+      <div class="grupo-form">
+        <label for="fecha-nacimiento">Fecha de nacimiento:</label>
+        <input type="date" id="fecha-nacimiento">
+        <span id="fecha-nacimiento-error" class="msj-error"></span>
+      </div>
+
+      <div class="grupo-form">
+        <label for="telefono">Teléfono:</label>
+        <input type="text" id="telefono" placeholder="Ej: 987654321">
+        <span id="telefono-error" class="msj-error"></span>
+      </div>
       
-      <button type="button" class="boton-verde" onclick="validarRegistro()">Registrarme</button>
-      <p id="error-reg" style="color: red; font-weight: bold;"></p>
+      <button type="submit" class="boton-verde">Registrarme</button>
+      <p id="mensaje-formulario"></p>
+
+      <div class="enlaces-form">
+        <p>¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a></p>
+        <p><a href="index.html">Volver a la página principal</a></p>
+      </div>
     </form>
   </section>
 </main>
 
 <footer class="footer-decorado">
-  <p>Veterinaria San Marcos 2026 - Proyecto de evaluación</p>
+  <p>Veterinaria San Marcos <span id="anio-actual"></span> - Proyecto de evaluación</p>
   <p>Hecho por alumnos</p>
 </footer>
 
-<script>
-  function validarRegistro() {
-    var nom = document.getElementById('nom-reg').value;
-    var mail = document.getElementById('mail-reg').value;
-    var p1 = document.getElementById('pass1').value;
-    var p2 = document.getElementById('pass2').value;
-    var error = document.getElementById('error-reg');
-    
-    if(nom == "" || mail == "" || p1 == "" || p2 == "") {
-      error.style.color = "red";
-      error.innerText = "Tienes que llenar todo, por favor";
-      return;
-    }
-    
-    if(!mail.includes("@")) {
-      error.style.color = "red";
-      error.innerText = "El correo no sirve así";
-      return;
-    }
-    
-    if(p1 != p2) {
-      error.style.color = "red";
-      error.innerText = "Las contraseñas no coinciden";
-      return;
-    }
-    
-    error.style.color = "green";
-    error.innerText = "¡Cuenta creada correctamente!";
-  }
-</script>
-
+<script src="js/script.js"></script>
 </body>
 </html>

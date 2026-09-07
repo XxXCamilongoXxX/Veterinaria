@@ -1,109 +1,101 @@
-/* =========================================================
-   Veterinaria San Marcos - script.js
-   Contiene: año dinámico del footer, interacción de la página
-   de detalle de servicio y validaciones de los formularios
-   de login y registro. Cada bloque comprueba si sus elementos
-   existen antes de ejecutarse, así el mismo archivo sirve
-   para las 5 páginas.
-   ========================================================= */
-
 document.addEventListener('DOMContentLoaded', function () {
 
-  /* ---- Año automático en el pie de página (todas las páginas) ---- */
+  var menuNav = document.querySelector('.menu');
+  var sesionActiva = localStorage.getItem('sesionActiva');
+  var datosGuardados = localStorage.getItem('usuarioVetSanMarcos');
+
+  if (sesionActiva === 'true' && datosGuardados && menuNav) {
+    var usuario = JSON.parse(datosGuardados);
+    var inicial = usuario.nombre.charAt(0).toUpperCase();
+
+    menuNav.innerHTML = `
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="servicios.html">Servicios</a></li>
+      <li class="perfil-usuario">
+        <div class="foto-perfil">${inicial}</div>
+        <span>Hola, ${usuario.nombre}</span>
+      </li>
+      <li><a href="#" id="cerrar-sesion">Cerrar sesión</a></li>
+    `;
+
+    document.getElementById('cerrar-sesion').addEventListener('click', function(evento) {
+      evento.preventDefault();
+      localStorage.removeItem('sesionActiva');
+      window.location.href = 'index.html';
+    });
+  }
+
   var elAnio = document.getElementById('anio-actual');
   if (elAnio) {
     elAnio.textContent = new Date().getFullYear();
   }
 
-  /* =====================================================
-     PÁGINA DE DETALLE DE SERVICIO (producto.html)
-     Interacción JS: selector de cantidad que calcula el
-     total en vivo y botón de agendamiento que muestra
-     un mensaje de confirmación.
-     ===================================================== */
-  var inputCantidad = document.getElementById('cantidad');
-  if (inputCantidad) {
-    var precioUnitario = parseFloat(inputCantidad.dataset.precio || '0');
-    var elTotal = document.getElementById('total-calculado');
-    var btnMenos = document.getElementById('restar-cantidad');
-    var btnMas = document.getElementById('sumar-cantidad');
-    var btnAgregar = document.getElementById('agregar-carrito');
-    var mensajeCarrito = document.getElementById('mensaje-carrito');
+  var selectMascota = document.getElementById('tipo-animal');
+  var precioFinal = document.getElementById('precio-final');
+  var btnAgendar = document.getElementById('btn-agendar');
+  var fechaReserva = document.getElementById('fecha-reserva');
+  var mensajeReserva = document.getElementById('mensaje-reserva');
 
-    function formatearCLP(valor) {
-      return '$' + Math.round(valor).toLocaleString('es-CL');
-    }
-
-    function actualizarTotal() {
-      var cantidad = parseInt(inputCantidad.value, 10);
-      if (isNaN(cantidad) || cantidad < 1) {
-        cantidad = 1;
+  if (selectMascota && precioFinal) {
+    selectMascota.addEventListener('change', function() {
+      var valor = parseInt(this.value, 10);
+      if (valor > 0) {
+        precioFinal.textContent = '$' + valor.toLocaleString('es-CL');
+      } else {
+        precioFinal.textContent = '$0';
       }
-      var max = parseInt(inputCantidad.max, 10) || 20;
-      if (cantidad > max) {
-        cantidad = max;
-      }
-      inputCantidad.value = cantidad;
-      if (elTotal) {
-        elTotal.textContent = formatearCLP(precioUnitario * cantidad);
-      }
-    }
-
-    if (btnMenos) {
-      btnMenos.addEventListener('click', function () {
-        inputCantidad.value = Math.max(1, parseInt(inputCantidad.value, 10) - 1);
-        actualizarTotal();
-      });
-    }
-
-    if (btnMas) {
-      btnMas.addEventListener('click', function () {
-        var max = parseInt(inputCantidad.max, 10) || 20;
-        inputCantidad.value = Math.min(max, parseInt(inputCantidad.value, 10) + 1);
-        actualizarTotal();
-      });
-    }
-
-    inputCantidad.addEventListener('input', actualizarTotal);
-    actualizarTotal();
-
-    if (btnAgregar && mensajeCarrito) {
-      btnAgregar.addEventListener('click', function () {
-        var cantidad = parseInt(inputCantidad.value, 10);
-        var nombreProducto = document.querySelector('.detalle-info h1');
-        var nombre = nombreProducto ? nombreProducto.textContent : 'servicio';
-        mensajeCarrito.textContent = 'Agregaste ' + cantidad + ' x ' + nombre +
-          ' al agendamiento. Total: ' + formatearCLP(precioUnitario * cantidad) + '.';
-        mensajeCarrito.classList.add('mostrar');
-      });
-    }
+    });
   }
 
-  /* =====================================================
-     VALIDACIONES COMUNES
-     ===================================================== */
+  if (btnAgendar && selectMascota && fechaReserva && mensajeReserva) {
+    btnAgendar.addEventListener('click', function() {
+      
+      if (selectMascota.value === "0") {
+        mensajeReserva.style.color = "red";
+        mensajeReserva.textContent = "Por favor, selecciona el tipo de mascota.";
+        return;
+      }
+      
+      if (fechaReserva.value === "") {
+        mensajeReserva.style.color = "red";
+        mensajeReserva.textContent = "Por favor, selecciona una fecha para la cita.";
+        return;
+      }
+
+      if (sesionActiva !== 'true' || !datosGuardados) {
+        mensajeReserva.style.color = "red";
+        mensajeReserva.innerHTML = "Debes <a href='login.html' style='color: #2e86c1; text-decoration: underline;'>iniciar sesión</a> para agendar.";
+        return;
+      }
+
+      var datosUsuario = JSON.parse(datosGuardados);
+      var correo = datosUsuario.correo;
+      var fechaInvertida = fechaReserva.value.split('-').reverse().join('-');
+
+      mensajeReserva.style.color = "green";
+      mensajeReserva.innerHTML = "¡Hora reservada con éxito para el <strong>" + fechaInvertida + "</strong>! <br><br> Hemos enviado una copia del comprobante a tu correo: <strong>" + correo + "</strong>";
+      
+      selectMascota.value = "0";
+      fechaReserva.value = "";
+      precioFinal.textContent = "$0";
+    });
+  }
+
   var RE_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   var RE_SOLO_LETRAS = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 
   function mostrarError(input, mensaje) {
     input.classList.add('invalido');
     var contenedorError = document.getElementById(input.id + '-error');
-    if (contenedorError) {
-      contenedorError.textContent = mensaje;
-    }
+    if (contenedorError) { contenedorError.textContent = mensaje; }
   }
 
   function limpiarError(input) {
     input.classList.remove('invalido');
     var contenedorError = document.getElementById(input.id + '-error');
-    if (contenedorError) {
-      contenedorError.textContent = '';
-    }
+    if (contenedorError) { contenedorError.textContent = ''; }
   }
 
-  /* =====================================================
-     PÁGINA DE LOGIN (login.html)
-     ===================================================== */
   var formLogin = document.getElementById('form-login');
   if (formLogin) {
     var correoLogin = document.getElementById('correo-login');
@@ -128,19 +120,26 @@ document.addEventListener('DOMContentLoaded', function () {
       if (claveLogin.value === '') {
         mostrarError(claveLogin, 'Ingresa tu contraseña.');
         esValido = false;
-      } else if (claveLogin.value.length < 8) {
-        mostrarError(claveLogin, 'La contraseña debe tener al menos 8 caracteres.');
-        esValido = false;
       }
 
       mensajeLogin.classList.remove('exito', 'fallo');
       if (esValido) {
-        mensajeLogin.textContent = 'Inicio de sesión simulado correctamente. ¡Bienvenido/a de vuelta!';
-        mensajeLogin.classList.add('exito');
-        formLogin.reset();
-      } else {
-        mensajeLogin.textContent = 'Revisa los campos marcados en rojo antes de continuar.';
-        mensajeLogin.classList.add('fallo');
+        var usuarioGuardado = localStorage.getItem('usuarioVetSanMarcos');
+        if (usuarioGuardado) {
+          var datos = JSON.parse(usuarioGuardado);
+          if (correoLogin.value.trim() === datos.correo && claveLogin.value === datos.clave) {
+            localStorage.setItem('sesionActiva', 'true');
+            window.location.href = 'index.html';
+          } else {
+            mostrarError(correoLogin, 'Datos incorrectos.');
+            mostrarError(claveLogin, 'Datos incorrectos.');
+            mensajeLogin.textContent = 'Correo o contraseña incorrectos.';
+            mensajeLogin.classList.add('fallo');
+          }
+        } else {
+          mensajeLogin.textContent = 'No hay cuentas registradas.';
+          mensajeLogin.classList.add('fallo');
+        }
       }
     });
 
@@ -149,9 +148,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  /* =====================================================
-     PÁGINA DE REGISTRO (registro.html)
-     ===================================================== */
   var formRegistro = document.getElementById('form-registro');
   if (formRegistro) {
     var nombre = document.getElementById('nombre');
@@ -165,82 +161,53 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var camposTexto = [nombre, apellido, correo, clave, claveConfirmar, fechaNacimiento, telefono];
 
-    function edadDesde(fechaStr) {
-      var hoy = new Date();
-      var nacimiento = new Date(fechaStr);
-      var edad = hoy.getFullYear() - nacimiento.getFullYear();
-      var mes = hoy.getMonth() - nacimiento.getMonth();
-      if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
-        edad--;
-      }
-      return edad;
-    }
-
     formRegistro.addEventListener('submit', function (evento) {
       evento.preventDefault();
       var esValido = true;
       camposTexto.forEach(limpiarError);
 
       if (nombre.value.trim() === '') {
-        mostrarError(nombre, 'El nombre es obligatorio.');
+        mostrarError(nombre, 'Obligatorio.');
         esValido = false;
       } else if (!RE_SOLO_LETRAS.test(nombre.value.trim())) {
-        mostrarError(nombre, 'El nombre solo puede contener letras.');
-        esValido = false;
-      }
-
-      if (apellido.value.trim() === '') {
-        mostrarError(apellido, 'El apellido es obligatorio.');
-        esValido = false;
-      } else if (!RE_SOLO_LETRAS.test(apellido.value.trim())) {
-        mostrarError(apellido, 'El apellido solo puede contener letras.');
+        mostrarError(nombre, 'Solo letras.');
         esValido = false;
       }
 
       if (correo.value.trim() === '') {
-        mostrarError(correo, 'El correo electrónico es obligatorio.');
+        mostrarError(correo, 'Obligatorio.');
         esValido = false;
       } else if (!RE_CORREO.test(correo.value.trim())) {
-        mostrarError(correo, 'Ingresa un correo con formato válido (ej: nombre@dominio.com).');
+        mostrarError(correo, 'Correo inválido.');
         esValido = false;
       }
 
       if (clave.value === '') {
-        mostrarError(clave, 'La contraseña es obligatoria.');
+        mostrarError(clave, 'Obligatorio.');
         esValido = false;
-      } else if (clave.value.length < 8 || !/[0-9]/.test(clave.value) || !/[A-Za-z]/.test(clave.value)) {
-        mostrarError(clave, 'Mínimo 8 caracteres, combinando letras y números.');
-        esValido = false;
-      }
-
-      if (claveConfirmar.value === '') {
-        mostrarError(claveConfirmar, 'Confirma tu contraseña.');
-        esValido = false;
-      } else if (claveConfirmar.value !== clave.value) {
-        mostrarError(claveConfirmar, 'Las contraseñas no coinciden.');
+      } else if (clave.value.length < 8) {
+        mostrarError(clave, 'Mínimo 8 caracteres.');
         esValido = false;
       }
 
-      if (fechaNacimiento.value === '') {
-        mostrarError(fechaNacimiento, 'La fecha de nacimiento es obligatoria.');
-        esValido = false;
-      } else if (edadDesde(fechaNacimiento.value) < 13) {
-        mostrarError(fechaNacimiento, 'Debes tener al menos 13 años para registrarte.');
-        esValido = false;
-      }
-
-      if (telefono.value.trim() !== '' && !/^[0-9+\s]{7,15}$/.test(telefono.value.trim())) {
-        mostrarError(telefono, 'Ingresa solo números (7 a 15 dígitos).');
+      if (claveConfirmar.value !== clave.value) {
+        mostrarError(claveConfirmar, 'No coinciden.');
         esValido = false;
       }
 
       mensajeRegistro.classList.remove('exito', 'fallo');
       if (esValido) {
-        mensajeRegistro.textContent = 'Cuenta creada correctamente. ¡Gracias por unirte a Veterinaria San Marcos!';
+        var datosUsuario = {
+          nombre: nombre.value.trim(),
+          correo: correo.value.trim(),
+          clave: clave.value
+        };
+        localStorage.setItem('usuarioVetSanMarcos', JSON.stringify(datosUsuario));
+        mensajeRegistro.textContent = '¡Cuenta creada! Ve a Iniciar Sesión.';
         mensajeRegistro.classList.add('exito');
         formRegistro.reset();
       } else {
-        mensajeRegistro.textContent = 'Hay campos por corregir. Revisa los mensajes en rojo.';
+        mensajeRegistro.textContent = 'Revisa los campos en rojo.';
         mensajeRegistro.classList.add('fallo');
       }
     });
