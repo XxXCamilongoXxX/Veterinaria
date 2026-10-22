@@ -1,0 +1,1 @@
+export default function Campo({ label, error, ...props }) { return <div className="grupo-form"><label htmlFor={props.id}>{label}</label><input {...props} className={error ? 'invalido' : ''} aria-invalid={Boolean(error)} />{error && <span className="msj-error">{error}</span>}</div> }

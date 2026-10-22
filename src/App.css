@@ -1,0 +1,76 @@
+.header-vet { position: relative; }
+.banner-inicio { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 32px; }
+.banner-inicio .caja-texto { width: auto; min-width: 0; padding-right: 0; }
+.banner-inicio .caja-texto h1 { font-size: clamp(30px, 3vw, 36px); line-height: 1.2; margin: 0 0 16px; }
+.banner-inicio .caja-foto { min-width: 0; display: flex; justify-content: center; }
+.banner-inicio .caja-foto img { width: 100%; max-width: 400px; max-height: 300px; object-fit: cover; }
+.menu { padding-left: 0; align-items: center; flex-wrap: wrap; }
+.menu li { display: flex; align-items: center; }
+.menu a.active { background-color: #28b463; }
+#cerrar-sesion { border: 0; color: white; border-radius: 5px; padding: 8px 12px; cursor: pointer; }
+.caja-foto img { display: block; width: min(400px, 100%); height: auto; }
+.fotos-historia img { width: min(300px, 48%); height: auto; object-fit: cover; }
+.ancho-completo { width: 100%; }
+.catalogo { max-width: 940px; margin: 20px auto 40px; padding: 0 20px; }
+.filtro-servicios { display: flex; gap: 12px; align-items: center; justify-content: flex-end; margin: 15px 0; }
+.filtro-servicios select, .grupo-form select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+.galeria-servicios { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.tarjeta-servicio { background: #fff; border: 2px solid #2e86c1; padding: 15px; border-radius: 10px; display: flex; flex-direction: column; gap: 8px; }
+.tarjeta-servicio img { width: 100%; height: 180px; object-fit: cover; border-radius: 6px; }
+.tarjeta-servicio h3 { margin: 4px 0; color: #1b4f72; }
+.tarjeta-servicio p { margin: 0; }
+.acciones-tarjeta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: auto; }
+.acciones-tarjeta .boton-verde, .acciones-tarjeta .boton-verde { margin-top: 10px; }
+.boton-favorito { border: 1px solid #2e86c1; background: white; color: #c0392b; border-radius: 8px; font-size: 24px; width: 44px; height: 44px; cursor: pointer; }
+.detalle-servicio { max-width: 700px; display: grid; grid-template-columns: minmax(180px, 300px) 1fr; gap: 30px; align-items: start; }
+.detalle-servicio > img { width: 100%; border-radius: 10px; object-fit: cover; }
+.total-detalle { font-size: 20px; font-weight: bold; margin-top: 15px; }
+.total-detalle strong { color: #28b463; }
+.carrito, .admin { max-width: 700px; }
+.lista-carrito { padding-left: 20px; }
+.lista-carrito li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #ddd; }
+.detalle-carrito { display: grid; grid-template-columns: minmax(120px, 1fr) auto; gap: 6px 16px; align-items: center; width: 100%; }
+.fecha-carrito { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; }
+.fecha-carrito input { padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+.lista-carrito button { color: #1b4f72; border: 0; background: none; text-decoration: underline; }
+.datos-perfil p { margin: 10px 0; }
+.admin h2 { font-size: 22px; color: #1b4f72; margin: 25px 0 12px; }
+.pagina-veterinario { max-width: 960px; margin: 30px auto; padding: 0 20px; }
+.encabezado-veterinario { background: white; border: 3px dashed #2e86c1; border-radius: 15px; padding: 24px; margin-bottom: 20px; }
+.encabezado-veterinario h1 { margin-top: 0; }
+.lista-solicitudes { display: grid; gap: 18px; }
+.tarjeta-solicitud { background: white; border: 2px solid #2e86c1; border-radius: 10px; padding: 20px; }
+.tarjeta-solicitud p { margin: 8px 0; overflow-wrap: anywhere; }
+.tarjeta-solicitud h3 { color: #1b4f72; font-size: 19px; margin: 16px 0 8px; }
+.encabezado-solicitud { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.encabezado-solicitud h2 { color: #1b4f72; margin: 0; font-size: 20px; }
+.estado-solicitud { border-radius: 20px; background: #fff3cd; color: #765b00; padding: 5px 12px; font-weight: bold; }
+.estado-solicitud.estado-atendida { background: #d4edda; color: #155724; }
+.total-solicitud { font-size: 18px; }
+.sin-solicitudes { background: white; border-left: 6px solid #28b463; padding: 18px; }
+.formulario .btn.boton-verde { width: fit-content; border: 0; }
+.grupo-form input.invalido { border-color: red; background-color: #ffe6e6; }
+@media (max-width: 760px) {
+  .nav-bar { flex-direction: column; gap: 14px; }
+  .menu { justify-content: center; gap: 6px; }
+  .menu a { font-size: 15px; padding: 8px; }
+  .banner-principal { margin: 18px 12px; padding: 24px; flex-direction: column; gap: 20px; }
+  .banner-inicio { grid-template-columns: 1fr; }
+  .caja-texto { width: 100%; padding-right: 0; }
+  .caja-texto h1 { font-size: 30px; }
+  .banner-inicio .caja-foto img { max-width: 100%; max-height: 280px; }
+  .historia-fondo { margin: 18px 12px; padding: 24px; }
+  .fotos-historia { flex-wrap: wrap; }
+  .galeria-servicios { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contenedor-formulario { margin: 20px 12px; }
+}
+@media (max-width: 520px) {
+  .galeria-servicios { grid-template-columns: 1fr; }
+  .detalle-servicio { grid-template-columns: 1fr; }
+  .fotos-historia img { width: 100%; }
+  .seccion-video { padding: 25px 15px; }
+  .lista-carrito li { align-items: stretch; flex-direction: column; }
+  .fecha-carrito { align-items: flex-start; flex-direction: column; }
+  .pagina-veterinario { padding: 0 12px; }
+  .encabezado-solicitud { align-items: flex-start; flex-direction: column; }
+}
