@@ -36,16 +36,9 @@ npm run lint     # Revisa el código con ESLint
 npm test         # Ejecuta las pruebas unitarias con Vitest
 ```
 
-## Accesos de demostración
+## Acceso de demostración
 
-El proyecto contiene cuentas estáticas para mostrar las vistas internas:
-
-| Rol | Correo | Contraseña |
-|---|---|---|
-| Administrador | `admin@vetsanmarcos.cl` | `Admin123` |
-| Veterinario | `veterinario@vetsanmarcos.cl` | `Vet2026` |
-
-Estos accesos son solo para demostración. No uses estas credenciales ni el almacenamiento del prototipo para información real.
+El proyecto contiene accesos estáticos para mostrar las vistas de administrador y veterinario. Son solo para demostración; no uses el prototipo para almacenar datos reales.
 
 ## Estructura del proyecto
 
@@ -55,6 +48,7 @@ src/
   context/      Estado compartido de la tienda y sesión
   data/         Datos iniciales de servicios
   pages/        Vistas y rutas de la aplicación
+  styles/       Estilos globales y de la aplicación React
 public/img/     Recursos estáticos
 ERS.md          Especificación de Requisitos de Software
 plan_de_pruebas.md  Escenarios de pruebas documentados

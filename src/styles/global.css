@@ -176,7 +176,7 @@ body {
   font-size: 15px;
 }
 
-/* Clases que agrega tu script.js cuando hay errores o aciertos */
+/* Estados de validación usados por los formularios React */
 .grupo-form input.invalido {
   border-color: red;
   background-color: #ffe6e6;
