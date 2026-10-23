@@ -52,14 +52,12 @@ src/
 public/img/     Recursos estáticos
 ERS.md          Especificación de Requisitos de Software
 plan_de_pruebas.md  Escenarios de pruebas documentados
-entregables/    Presentación del proyecto
 ```
 
 ## Documentación
 
 - [Especificación de Requisitos de Software](ERS.md)
 - [Plan de pruebas](plan_de_pruebas.md)
-- [Presentación del proyecto](entregables/Veterinaria_San_Marcos_ERS_presentacion.pptx)
 
 ## Alcance y limitaciones
 
