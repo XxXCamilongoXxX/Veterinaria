@@ -1,0 +1,23 @@
+CREATE TABLE productos (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(120) NOT NULL,
+    descripcion VARCHAR(1000) NOT NULL,
+    precio INT NOT NULL,
+    stock INT NOT NULL
+);
+
+CREATE TABLE clientes (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(80) NOT NULL,
+    correo VARCHAR(180) NOT NULL UNIQUE,
+    telefono VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE ventas (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    cliente_id BIGINT NOT NULL,
+    producto_id BIGINT NOT NULL,
+    cantidad INT NOT NULL,
+    total INT NOT NULL,
+    fecha DATE NOT NULL
+);

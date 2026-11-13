@@ -20,7 +20,7 @@ Aplicación web moderna para una clínica veterinaria en Rancagua. Permite a los
 
 ## 🚀 Instalación y ejecución
 
-Para levantar este proyecto en tu entorno local, asegúrate de tener **Node.js** y **npm** instalados. Ejecuta los siguientes comandos en tu terminal:
+Para levantar el frontend en modo desarrollo, asegúrate de tener **Node.js** y **npm** instalados. Ejecuta los siguientes comandos en tu terminal:
 
 ```bash
 # 1. Instalar todas las dependencias
@@ -30,6 +30,16 @@ npm install
 npm run dev
 ```
 
+El frontend ahora consume la API de Spring Boot. Para levantar todo el entorno (web, API y MySQL) con Docker, copia `.env.example` a `.env`, cambia las claves y ejecuta:
+
+```bash
+docker compose up --build
+```
+
+La web estará en `http://localhost:8080`, la API en `http://localhost:8081` y su documentación OpenAPI en `http://localhost:8081/swagger-ui.html`. Flyway crea el esquema y carga el catálogo inicial automáticamente. MySQL persiste datos en el volumen `veterinaria-mysql`.
+
+Para desarrollo separado, inicia el backend con Java 21 y Maven desde `backend/` (`mvn spring-boot:run`) y el frontend con `npm run dev`; Vite reenvía `/api` a `localhost:8080`. También se puede definir `VITE_API_URL` para apuntar a otra URL de API.
+
 > Vite mostrará en la terminal una URL local (ej. `http://localhost:5173`) para abrir la aplicación en tu navegador.
 
 ## 🔑 Accesos de Demostración (Login)
@@ -38,10 +48,33 @@ El proyecto incluye cuentas estáticas preconfiguradas para evaluar las rutas pr
 
 | Rol | Correo | Contraseña |
 | :--- | :--- | :--- |
-| 👑 **Administrador** | `admin@vetsanmarcos.cl` | `Admin123` |
-| 🩺 **Veterinario** | `veterinario@vetsanmarcos.cl` | `Vet2026` |
+| 👑 **Administrador** | `admin@vetsanmarcos.cl` | `Admin123` (configurable con `DEMO_ADMIN_PASSWORD`) |
+| 🩺 **Veterinario** | `veterinario@vetsanmarcos.cl` | `Vet2026` (configurable con `DEMO_VET_PASSWORD`) |
 
-*(Nota: Estos datos son exclusivamente para la demostración del prototipo frontend).*
+*(Cuentas de demostración; cambia sus claves antes de desplegar el sistema.)*
+
+## 🧩 Backend
+
+La API está en `backend/` y usa Spring Boot, Spring Security, JWT, JPA, Flyway y MySQL. Incluye registro e inicio de sesión, catálogo de servicios y solicitudes de atención para la aplicación; además, incorpora CRUD independiente para Producto, Cliente y Venta. Estas tres entidades de la pauta no tienen relaciones JPA entre sí: Venta conserva `clienteId` y `productoId` como identificadores escalares. Las contraseñas se guardan con BCrypt; los roles `admin` y `veterinario` se crean como cuentas de demostración al iniciar por primera vez.
+
+| Método y ruta | Acceso | Función |
+| --- | --- | --- |
+| `POST /api/v1/auth/registro` | Público | Crear cuenta cliente |
+| `POST /api/v1/auth/login` | Público | Iniciar sesión y recibir JWT |
+| `GET /api/v1/servicios` | Público | Listar servicios activos |
+| `POST/PUT/DELETE /api/v1/servicios` | Admin | Administrar catálogo |
+| `GET/POST /api/v1/solicitudes` | Sesión | Consultar o crear solicitudes |
+| `PATCH /api/v1/solicitudes/{id}/estado` | Veterinario/Admin | Cambiar estado |
+| `GET/POST /api/v1/productos` | Sesión | Listar o crear productos |
+| `GET/PUT/DELETE /api/v1/productos/{id}` | Sesión | Consultar, actualizar o eliminar productos |
+| `GET/POST /api/v1/clientes` | Sesión | Listar o crear clientes |
+| `GET/PUT/DELETE /api/v1/clientes/{id}` | Sesión | Consultar, actualizar o eliminar clientes |
+| `GET/POST /api/v1/ventas` | Sesión | Listar o registrar ventas |
+| `GET/PUT/DELETE /api/v1/ventas/{id}` | Sesión | Consultar, actualizar o eliminar ventas |
+
+Las pruebas unitarias de los tres servicios usan JUnit, Mockito y DataFaker. Ejecútalas desde `backend/` con `mvn test`.
+
+Las claves locales por defecto son solo para desarrollo. Configura `JWT_SECRET`, `DB_PASSWORD`, `MYSQL_ROOT_PASSWORD` y las claves demo usando `.env` antes de publicar el sistema.
 
 ## 🧪 Pruebas Unitarias (Vitest)
 
@@ -58,7 +91,7 @@ npm run test
 src/
 ├── components/   # Componentes modulares (Atoms, Molecules, Organisms)
 ├── context/      # Estados globales (TiendaContext, Sesión, Carrito)
-├── data/         # Mock data y datos iniciales de servicios
+├── data/         # Datos iniciales de respaldo del catálogo
 ├── pages/        # Vistas completas y rutas de react-router-dom
 └── styles/       # Estilos globales y paleta de colores
 public/img/       # Recursos estáticos y fotografías
@@ -71,4 +104,4 @@ public/img/       # Recursos estáticos y fotografías
 - 📊 [Presentación del Proyecto](entregables/Veterinaria_San_Marcos_ERS_presentacion.pptx)
 
 ---
-*Desarrollado como entrega final para la asignatura de Desarrollo Frontend. La persistencia temporal se maneja mediante `localStorage` y el estado de React.*
+*El catálogo, las cuentas y las solicitudes se persisten en MySQL. El carrito y los favoritos son estado temporal del frontend.*

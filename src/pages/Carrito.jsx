@@ -22,10 +22,7 @@ export default function Carrito() {
       setMensaje('Inicia sesión para enviar tus consultas a la veterinaria.')
       return
     }
-    crearSolicitud()
-    setMensaje('')
-    setRequiereLogin(false)
-    setConfirmado(true)
+    crearSolicitud().then((solicitud) => { if (!solicitud) throw new Error('No se pudo crear la solicitud.') ; setMensaje(''); setRequiereLogin(false); setConfirmado(true) }).catch((e) => { setConfirmado(false); setMensaje(e.message) })
   }
 
   const cambiarFecha = (indice, fecha) => {

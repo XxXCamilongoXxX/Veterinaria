@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import Campo from '../atoms/Campo'
+import { api } from '../../api'
 const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 export function fechaLimiteMayorEdad(hoy = new Date()) {
   const limite = new Date(hoy.getFullYear() - 18, hoy.getMonth(), hoy.getDate())
@@ -35,10 +36,8 @@ export default function FormularioAcceso({ registro = false, onSuccess }) {
     }
     setErrores(next); setMensaje('')
     if (Object.keys(next).length) return
-    if (registro) {
-      const cuenta = { nombre: valores.nombre.trim(), apellido: valores.apellido.trim(), correo: valores.correo.trim(), clave: valores.clave, telefono: valores.telefono, especie: valores.especie, mascota: valores.mascota, nacimiento: valores.nacimiento }
-      localStorage.setItem('usuarioVetSanMarcos', JSON.stringify(cuenta)); setMensaje('¡Cuenta creada! Ve a Iniciar Sesión.')
-    } else onSuccess(valores.correo.trim(), valores.clave, setMensaje)
+    if (registro) api('/auth/registro', { method: 'POST', body: JSON.stringify({ nombre: valores.nombre.trim(), apellido: valores.apellido.trim(), correo: valores.correo.trim(), clave: valores.clave, telefono: valores.telefono, especie: valores.especie, mascota: valores.mascota, nacimiento: valores.nacimiento }) }).then(() => setMensaje('¡Cuenta creada! Ve a Iniciar Sesión.')).catch((e) => setMensaje(e.message))
+    else onSuccess(valores.correo.trim(), valores.clave, setMensaje)
   }
   return <Form className="formulario" onSubmit={enviar} noValidate>
     {registro && <><Campo id="nombre" name="nombre" label="Nombre:" placeholder="Ej: Juan" value={valores.nombre} onChange={cambiar} error={errores.nombre} /><Campo id="apellido" name="apellido" label="Apellido:" placeholder="Ej: Pérez" value={valores.apellido} onChange={cambiar} error={errores.apellido} /></>}

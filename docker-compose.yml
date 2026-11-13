@@ -1,0 +1,47 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: vetsanmarcos-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: veterinaria
+      MYSQL_USER: veterinaria
+      MYSQL_PASSWORD: ${DB_PASSWORD:-veterinaria_local}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_local_only}
+    volumes:
+      - veterinaria-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  api:
+    build: ./backend
+    container_name: vetsanmarcos-api
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/veterinaria?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: veterinaria
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-veterinaria_local}
+      JWT_SECRET: ${JWT_SECRET:-local-development-secret-key-change-before-deploying-2026}
+      DEMO_ADMIN_PASSWORD: ${DEMO_ADMIN_PASSWORD:-Admin123}
+      DEMO_VET_PASSWORD: ${DEMO_VET_PASSWORD:-Vet2026}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:4173,http://localhost:8080}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+  web:
+    build: .
+    container_name: vetsanmarcos-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_started
+    ports:
+      - "8080:80"
+
+volumes:
+  veterinaria-mysql:
