@@ -3,4 +3,4 @@ dist/
 .vite/
 coverage/
 .env
-backend/target/
+back/target/

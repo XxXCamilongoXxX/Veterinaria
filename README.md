@@ -23,6 +23,9 @@ Aplicación web moderna para una clínica veterinaria en Rancagua. Permite a los
 Para levantar el frontend en modo desarrollo, asegúrate de tener **Node.js** y **npm** instalados. Ejecuta los siguientes comandos en tu terminal:
 
 ```bash
+# 0. Entrar a la carpeta del frontend
+cd front
+
 # 1. Instalar todas las dependencias
 npm install
 
@@ -38,7 +41,7 @@ docker compose up --build
 
 La web estará en `http://localhost:8080`, la API en `http://localhost:8081` y su documentación OpenAPI en `http://localhost:8081/swagger-ui.html`. Swagger agrupa las rutas por recurso; usa el botón **Authorize** para pegar el JWT que entrega `/api/v1/auth/login` cuando pruebes rutas protegidas. Flyway crea el esquema y carga el catálogo inicial automáticamente. MySQL persiste datos en el volumen `veterinaria-mysql`.
 
-Para desarrollo separado, inicia el backend con Java 21 y Maven desde `backend/` (`mvn spring-boot:run`) y el frontend con `npm run dev`; Vite reenvía `/api` a `localhost:8080`. También se puede definir `VITE_API_URL` para apuntar a otra URL de API.
+Para desarrollo separado, inicia el backend con Java 21 y Maven desde `back/` (`mvn spring-boot:run`) y el frontend desde `front/` con `npm run dev`; Vite reenvía `/api` a `localhost:8080`. También se puede definir `VITE_API_URL` para apuntar a otra URL de API.
 
 > Vite mostrará en la terminal una URL local (ej. `http://localhost:5173`) para abrir la aplicación en tu navegador.
 
@@ -53,9 +56,35 @@ El proyecto incluye cuentas estáticas preconfiguradas para evaluar las rutas pr
 
 *(Cuentas de demostración; cambia sus claves antes de desplegar el sistema.)*
 
+## 📁 Estructura del proyecto
+
+```
+Veterinaria/
+├── front/   → Frontend React + Vite (npm install / npm run dev)
+├── back/    → Backend Spring Boot (mvn spring-boot:run)
+└── docker-compose.yml
+```
+
+## 🐶 CRUD de Mascotas (Guía 3.2.2)
+
+Conexión del backend Spring Boot con el frontend React usando **Axios** y **react-router-dom**.
+
+- **Backend (`back/`)**: entidad `Mascota` (`nombre`, `especie`, `dueno`), `MascotaRepository`, `MascotaService`, `MascotaController` en `/api/mascotas`, migración Flyway `V3__create_mascotas.sql`, `CorsConfig` (Paso 7) y prueba `MascotaServiceTest`. La ruta `/api/mascotas/**` es pública, como en la guía.
+- **Frontend (`front/`)**: `src/services/MascotaService.js`, `src/components/MascotaList.jsx` y `src/components/MascotaForm.jsx`, con las rutas `/mascotas`, `/mascotas/nueva` y `/mascotas/editar/:id` (enlace **Mascotas** en el menú).
+
+| Método y ruta | Función |
+| --- | --- |
+| `GET /api/mascotas` | Listar mascotas |
+| `GET /api/mascotas/{id}` | Obtener una mascota |
+| `POST /api/mascotas` | Registrar mascota |
+| `PUT /api/mascotas/{id}` | Actualizar mascota |
+| `DELETE /api/mascotas/{id}` | Eliminar mascota |
+
+Para probarlo: inicia el backend en `back/` (puerto 8080), luego en `front/` ejecuta `npm install` y `npm run dev`, y abre `http://localhost:5173/mascotas`.
+
 ## 🧩 Backend
 
-La API está en `backend/` y usa Spring Boot, Spring Security, JWT, JPA, Flyway y MySQL. Incluye registro e inicio de sesión, catálogo de servicios y solicitudes de atención para la aplicación; además, incorpora CRUD independiente para Producto, Cliente y Venta. Estas tres entidades de la pauta no tienen relaciones JPA entre sí: Venta conserva `clienteId` y `productoId` como identificadores escalares. Las contraseñas se guardan con BCrypt; los roles `admin` y `veterinario` se crean como cuentas de demostración al iniciar por primera vez.
+La API está en `back/` y usa Spring Boot, Spring Security, JWT, JPA, Flyway y MySQL. Incluye registro e inicio de sesión, catálogo de servicios y solicitudes de atención para la aplicación; además, incorpora CRUD independiente para Producto, Cliente y Venta. Estas tres entidades de la pauta no tienen relaciones JPA entre sí: Venta conserva `clienteId` y `productoId` como identificadores escalares. Las contraseñas se guardan con BCrypt; los roles `admin` y `veterinario` se crean como cuentas de demostración al iniciar por primera vez.
 
 | Método y ruta | Acceso | Función |
 | --- | --- | --- |
@@ -72,7 +101,7 @@ La API está en `backend/` y usa Spring Boot, Spring Security, JWT, JPA, Flyway 
 | `GET/POST /api/v1/ventas` | Sesión | Listar o registrar ventas |
 | `GET/PUT/DELETE /api/v1/ventas/{id}` | Sesión | Consultar, actualizar o eliminar ventas |
 
-Las pruebas unitarias de los tres servicios usan JUnit, Mockito y DataFaker. Ejecútalas desde `backend/` con `mvn test`.
+Las pruebas unitarias de los tres servicios usan JUnit, Mockito y DataFaker. Ejecútalas desde `back/` con `mvn test`.
 
 Las claves locales por defecto son solo para desarrollo. Configura `JWT_SECRET`, `DB_PASSWORD`, `MYSQL_ROOT_PASSWORD` y las claves demo usando `.env` antes de publicar el sistema. El JSON OpenAPI también está disponible en `http://localhost:8081/v3/api-docs`.
 
