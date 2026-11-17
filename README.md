@@ -36,7 +36,7 @@ El frontend ahora consume la API de Spring Boot. Para levantar todo el entorno (
 docker compose up --build
 ```
 
-La web estará en `http://localhost:8080`, la API en `http://localhost:8081` y su documentación OpenAPI en `http://localhost:8081/swagger-ui.html`. Flyway crea el esquema y carga el catálogo inicial automáticamente. MySQL persiste datos en el volumen `veterinaria-mysql`.
+La web estará en `http://localhost:8080`, la API en `http://localhost:8081` y su documentación OpenAPI en `http://localhost:8081/swagger-ui.html`. Swagger agrupa las rutas por recurso; usa el botón **Authorize** para pegar el JWT que entrega `/api/v1/auth/login` cuando pruebes rutas protegidas. Flyway crea el esquema y carga el catálogo inicial automáticamente. MySQL persiste datos en el volumen `veterinaria-mysql`.
 
 Para desarrollo separado, inicia el backend con Java 21 y Maven desde `backend/` (`mvn spring-boot:run`) y el frontend con `npm run dev`; Vite reenvía `/api` a `localhost:8080`. También se puede definir `VITE_API_URL` para apuntar a otra URL de API.
 
@@ -74,7 +74,7 @@ La API está en `backend/` y usa Spring Boot, Spring Security, JWT, JPA, Flyway 
 
 Las pruebas unitarias de los tres servicios usan JUnit, Mockito y DataFaker. Ejecútalas desde `backend/` con `mvn test`.
 
-Las claves locales por defecto son solo para desarrollo. Configura `JWT_SECRET`, `DB_PASSWORD`, `MYSQL_ROOT_PASSWORD` y las claves demo usando `.env` antes de publicar el sistema.
+Las claves locales por defecto son solo para desarrollo. Configura `JWT_SECRET`, `DB_PASSWORD`, `MYSQL_ROOT_PASSWORD` y las claves demo usando `.env` antes de publicar el sistema. El JSON OpenAPI también está disponible en `http://localhost:8081/v3/api-docs`.
 
 ## 🧪 Pruebas Unitarias (Vitest)
 
