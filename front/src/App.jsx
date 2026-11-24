@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import MascotaForm from './components/MascotaForm'
 import MascotaList from './components/MascotaList'
+import ProductoForm from './components/ProductoForm'
+import ProductoList from './components/ProductoList'
 import DisenoBase from './components/organisms/DisenoBase'
 import { TiendaProvider, useTienda } from './context/TiendaContext'
 import Admin from './pages/Admin'
@@ -42,7 +44,7 @@ function RutasAplicacion() {
         <Route
           path="/admin"
           element={
-            <RutaProtegida roles={['admin']}>
+            <RutaProtegida roles={['ADMIN']}>
               <Admin />
             </RutaProtegida>
           }
@@ -50,14 +52,19 @@ function RutasAplicacion() {
         <Route
           path="/veterinario"
           element={
-            <RutaProtegida roles={['veterinario']}>
+            <RutaProtegida roles={['VETERINARIO']}>
               <Veterinario />
             </RutaProtegida>
           }
         />
-        <Route path="/mascotas" element={<MascotaList />} />
-        <Route path="/mascotas/nueva" element={<MascotaForm />} />
-        <Route path="/mascotas/editar/:id" element={<MascotaForm />} />
+        {/* Mascotas: cualquier usuario logueado ve el listado; solo ADMIN crea/edita */}
+        <Route path="/mascotas" element={<RutaProtegida><MascotaList /></RutaProtegida>} />
+        <Route path="/mascotas/nueva" element={<RutaProtegida roles={['ADMIN']}><MascotaForm /></RutaProtegida>} />
+        <Route path="/mascotas/editar/:id" element={<RutaProtegida roles={['ADMIN']}><MascotaForm /></RutaProtegida>} />
+        {/* Productos: solo ADMIN */}
+        <Route path="/admin/productos" element={<RutaProtegida roles={['ADMIN']}><ProductoList /></RutaProtegida>} />
+        <Route path="/admin/productos/nuevo" element={<RutaProtegida roles={['ADMIN']}><ProductoForm /></RutaProtegida>} />
+        <Route path="/admin/productos/editar/:id" element={<RutaProtegida roles={['ADMIN']}><ProductoForm /></RutaProtegida>} />
         <Route path="/carrito" element={<Carrito />} />
         <Route
           path="/perfil"

@@ -1,27 +1,27 @@
-import axios from 'axios';
+import http from '../api'
 
-const BASE_URL = 'http://localhost:8080/api/mascotas';
+const URL = '/mascotas'
 
 class MascotaService {
   getAllMascotas() {
-    return axios.get(BASE_URL);
+    return http.get(URL)
   }
 
   getMascotaById(id) {
-    return axios.get(`${BASE_URL}/${id}`);
+    return http.get(`${URL}/${id}`)
   }
 
   createMascota(mascota) {
-    return axios.post(BASE_URL, mascota);
+    return http.post(URL, mascota)
   }
 
   updateMascota(id, mascota) {
-    return axios.put(`${BASE_URL}/${id}`, mascota);
+    return http.put(`${URL}/${id}`, mascota)
   }
 
   deleteMascota(id) {
-    return axios.delete(`${BASE_URL}/${id}`);
+    return http.delete(`${URL}/${id}`)
   }
 }
 
-export default new MascotaService();
+export default new MascotaService()

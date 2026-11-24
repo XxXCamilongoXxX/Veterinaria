@@ -1,6 +1,8 @@
 package cl.vetsanmarcos.api.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "mascotas")
@@ -9,8 +11,16 @@ public class Mascota {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank @Size(max = 80)
+    @Column(nullable = false, length = 80)
     private String nombre;
+
+    @NotBlank @Size(max = 30)
+    @Column(nullable = false, length = 30)
     private String especie;
+
+    @NotBlank @Size(max = 120)
+    @Column(nullable = false, length = 120)
     private String dueno;
 
     public Mascota() {}

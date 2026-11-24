@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import Campo from '../atoms/Campo'
-import { api } from '../../api'
+import http from '../../api'
 const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 export function fechaLimiteMayorEdad(hoy = new Date()) {
   const limite = new Date(hoy.getFullYear() - 18, hoy.getMonth(), hoy.getDate())
@@ -36,7 +36,12 @@ export default function FormularioAcceso({ registro = false, onSuccess }) {
     }
     setErrores(next); setMensaje('')
     if (Object.keys(next).length) return
-    if (registro) api('/auth/registro', { method: 'POST', body: JSON.stringify({ nombre: valores.nombre.trim(), apellido: valores.apellido.trim(), correo: valores.correo.trim(), clave: valores.clave, telefono: valores.telefono, especie: valores.especie, mascota: valores.mascota, nacimiento: valores.nacimiento }) }).then(() => setMensaje('¡Cuenta creada! Ve a Iniciar Sesión.')).catch((e) => setMensaje(e.message))
+    if (registro) {
+      const datos = { nombre: valores.nombre.trim(), apellido: valores.apellido.trim(), correo: valores.correo.trim(), clave: valores.clave, telefono: valores.telefono, especie: valores.especie, mascota: valores.mascota, nacimiento: valores.nacimiento }
+      http.post('/auth/registro', datos)
+        .then(() => setMensaje('¡Cuenta creada! Ve a Iniciar Sesión.'))
+        .catch((e) => setMensaje(e.message))
+    }
     else onSuccess(valores.correo.trim(), valores.clave, setMensaje)
   }
   return <Form className="formulario" onSubmit={enviar} noValidate>
@@ -45,6 +50,6 @@ export default function FormularioAcceso({ registro = false, onSuccess }) {
     <Campo id="clave" name="clave" type="password" label="Contraseña:" placeholder={registro ? 'Mínimo 8 caracteres' : 'tu clave'} value={valores.clave} onChange={cambiar} error={errores.clave} />
     {registro && <><Campo id="confirmar" name="confirmar" type="password" label="Repetir contraseña:" value={valores.confirmar} onChange={cambiar} error={errores.confirmar} /><Campo id="nacimiento" name="nacimiento" type="date" label="Fecha de nacimiento:" max={fechaLimiteMayorEdad()} required value={valores.nacimiento} onChange={cambiar} error={errores.nacimiento} /><Campo id="telefono" name="telefono" type="tel" label="Teléfono:" placeholder="Ej: 987654321" value={valores.telefono} onChange={cambiar} error={errores.telefono} /><div className="grupo-form"><label htmlFor="especie">Especie de tu mascota:</label><select id="especie" name="especie" value={valores.especie} onChange={cambiar}><option value="">Selecciona una opción...</option><option>Perro</option><option>Gato</option><option>Conejo</option><option>Ave</option><option>Otra</option></select>{errores.especie && <span className="msj-error">{errores.especie}</span>}</div><Campo id="mascota" name="mascota" label="Nombre de tu mascota:" placeholder="Ej: Luna" value={valores.mascota} onChange={cambiar} error={errores.mascota} /></>}
     <Button type="submit" className="boton-verde">{registro ? 'Registrarme' : 'Entrar a mi cuenta'}</Button>
-    {mensaje && <p role="status" className={mensaje.includes('incorrect') || mensaje.includes('No hay') ? 'fallo' : 'exito'}>{mensaje}</p>}
+    {mensaje && <p role="status" className={mensaje.startsWith('¡') ? 'exito' : 'fallo'}>{mensaje}</p>}
   </Form>
 }

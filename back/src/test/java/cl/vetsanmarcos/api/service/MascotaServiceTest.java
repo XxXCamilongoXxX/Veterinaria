@@ -22,6 +22,7 @@ class MascotaServiceTest {
         Mascota mascota = new Mascota("Firulais", "Perro", "Juan Soto");
         when(repository.findAll()).thenReturn(List.of(mascota));
         when(repository.findById(1L)).thenReturn(Optional.of(mascota));
+        when(repository.existsById(1L)).thenReturn(true);
         when(repository.save(any(Mascota.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         assertEquals(1, service.obtenerTodas().size());

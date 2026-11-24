@@ -1,23 +1,42 @@
 package cl.vetsanmarcos.api.service;
 
-import cl.vetsanmarcos.api.model.Servicio;
+import cl.vetsanmarcos.api.config.SecurityConfig;
 import cl.vetsanmarcos.api.model.Usuario;
-import cl.vetsanmarcos.api.repository.ServicioRepository;
 import cl.vetsanmarcos.api.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * Al arrancar, crea las cuentas de demostración si no existen.
+ * Se hace aquí (y no en un script SQL) porque las contraseñas deben guardarse cifradas con BCrypt.
+ */
 @Component
 public class BootstrapData implements CommandLineRunner {
-    private final UsuarioRepository usuarios; private final ServicioRepository servicios; private final PasswordEncoder encoder;
+    private final UsuarioRepository usuarios;
+    private final PasswordEncoder encoder;
+
     @Value("${DEMO_ADMIN_PASSWORD:Admin123}") private String adminPassword;
     @Value("${DEMO_VET_PASSWORD:Vet2026}") private String vetPassword;
-    BootstrapData(UsuarioRepository usuarios,ServicioRepository servicios,PasswordEncoder encoder){this.usuarios=usuarios;this.servicios=servicios;this.encoder=encoder;}
-    @Override public void run(String... args){
-        if(!usuarios.existsByCorreoIgnoreCase("admin@vetsanmarcos.cl")) usuarios.save(new Usuario("Administrador","San Marcos","admin@vetsanmarcos.cl",encoder.encode(adminPassword),"admin",null,null,null,null));
-        if(!usuarios.existsByCorreoIgnoreCase("veterinario@vetsanmarcos.cl")) usuarios.save(new Usuario("Veterinario","San Marcos","veterinario@vetsanmarcos.cl",encoder.encode(vetPassword),"veterinario",null,null,null,null));
-        if(servicios.count()==0){servicios.save(new Servicio("Consulta General","Para saber cómo está tu animalito.",18000,"Todas","/img/perro en clinica.jpg"));servicios.save(new Servicio("Vacunación","Las vacunas al día para que no se enferme.",12000,"Perros y gatos","/img/gato vacuna.jpg"));servicios.save(new Servicio("Cirugía Menor","Procedimientos rápidos y seguros para tu mascota.",35000,"Todas","/img/wonejo.jpg"));}
+    @Value("${DEMO_USER_PASSWORD:User2026}") private String userPassword;
+
+    public BootstrapData(UsuarioRepository usuarios, PasswordEncoder encoder) {
+        this.usuarios = usuarios;
+        this.encoder = encoder;
+    }
+
+    @Override
+    public void run(String... args) {
+        crearSiNoExiste("Administrador", "San Marcos", "admin@vetsanmarcos.cl", adminPassword, SecurityConfig.ADMIN, null, null, null);
+        crearSiNoExiste("Veterinario", "San Marcos", "veterinario@vetsanmarcos.cl", vetPassword, SecurityConfig.VETERINARIO, null, null, null);
+        crearSiNoExiste("Ana", "Pérez", "usuario@vetsanmarcos.cl", userPassword, SecurityConfig.USER, "987654321", "Perro", "Luna");
+    }
+
+    private void crearSiNoExiste(String nombre, String apellido, String correo, String clave, String rol,
+                                 String telefono, String especie, String mascota) {
+        if (!usuarios.existsByCorreoIgnoreCase(correo)) {
+            usuarios.save(new Usuario(nombre, apellido, correo, encoder.encode(clave), rol, telefono, especie, mascota, null));
+        }
     }
 }

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
+import http from '../api'
 import { TiendaProvider, useTienda } from '../context/TiendaContext'
 import Carrito from './Carrito'
 
@@ -22,8 +23,6 @@ function renderCarrito() {
 }
 
 describe('Carrito', () => {
-  beforeEach(() => localStorage.clear())
-
   it('avisa y no confirma si falta la fecha de una cita', () => { // Arrange
     renderCarrito() // Act
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar solicitud' }))
@@ -31,15 +30,16 @@ describe('Carrito', () => {
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
   })
 
-  it('confirma la solicitud después de poner fecha en cada servicio', () => { // Arrange
-    localStorage.setItem('sesionActiva', 'true')
-    localStorage.setItem('sesionUsuario', JSON.stringify({ nombre: 'Ana', apellido: 'Pérez', correo: 'ana@correo.cl', telefono: '987654321', mascota: 'Luna', especie: 'Perro' }))
+  it('confirma la solicitud después de poner fecha en cada servicio', async () => { // Arrange
+    localStorage.setItem('vetToken', 'token-de-prueba')
+    localStorage.setItem('sesionUsuario', JSON.stringify({ nombre: 'Ana', apellido: 'Pérez', correo: 'ana@correo.cl', rol: 'USER' }))
+    http.post.mockResolvedValue({ data: { id: 'SOL-1', estado: 'Pendiente', servicios: [] } })
     renderCarrito()
     fireEvent.change(screen.getByLabelText('Fecha de la cita:', { selector: '#fecha-cita-0' }), { target: { value: '2026-11-01' } })
     fireEvent.change(screen.getByLabelText('Fecha de la cita:', { selector: '#fecha-cita-1' }), { target: { value: '2026-11-02' } }) // Act
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar solicitud' }))
-    expect(screen.getByRole('status')).toHaveTextContent('Solicitud de servicios confirmada') // Assert
-    expect(JSON.parse(localStorage.getItem('solicitudesVetSanMarcos'))[0].servicios).toHaveLength(2)
+    expect(await screen.findByRole('status')).toHaveTextContent('Solicitud de servicios confirmada') // Assert
+    expect(http.post).toHaveBeenCalledWith('/solicitudes', { servicios: [{ servicioId: 1, fecha: '2026-11-01' }, { servicioId: 2, fecha: '2026-11-02' }] })
     expect(screen.getByText('Aún no agregas servicios.')).toBeInTheDocument()
   })
 

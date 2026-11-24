@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react'
+import http from '../../api'
 import { describe, expect, it } from 'vitest'
 import FormularioAcceso, { esMayorDeEdad, fechaLimiteMayorEdad } from './FormularioAcceso'
 
@@ -45,8 +46,8 @@ describe('FormularioAcceso', () => {
     const limite = fechaLimiteMayorEdad() // Act
     expect(esMayorDeEdad(limite)).toBe(true) // Assert
   })
-  it('registra los datos de mascota en localStorage', () => { // Arrange
-    localStorage.clear(); render(<FormularioAcceso registro />)
+  it('envía el registro con los datos de la mascota a la API', async () => { // Arrange
+    render(<FormularioAcceso registro />)
     fireEvent.change(screen.getByLabelText('Nombre:'), { target: { value: 'Ana' } })
     fireEvent.change(screen.getByLabelText('Apellido:'), { target: { value: 'Pérez' } })
     fireEvent.change(screen.getByLabelText('Correo:'), { target: { value: 'ana@correo.cl' } })
@@ -57,6 +58,7 @@ describe('FormularioAcceso', () => {
     fireEvent.change(screen.getByLabelText('Especie de tu mascota:'), { target: { value: 'Perro' } })
     fireEvent.change(screen.getByLabelText('Nombre de tu mascota:'), { target: { value: 'Luna' } })
     fireEvent.click(screen.getByRole('button', { name: 'Registrarme' })) // Act
-    expect(JSON.parse(localStorage.getItem('usuarioVetSanMarcos')).mascota).toBe('Luna') // Assert
+    expect(await screen.findByText('¡Cuenta creada! Ve a Iniciar Sesión.')).toBeInTheDocument() // Assert
+    expect(http.post).toHaveBeenCalledWith('/auth/registro', expect.objectContaining({ correo: 'ana@correo.cl', mascota: 'Luna' }))
   })
 })
